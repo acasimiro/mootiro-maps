@@ -9,9 +9,15 @@
       <h1>{{ importsheet.name }}</h1>
       <br/>
       <p>
-        Google spreadsheet link:<br/>
+        Google Spreadsheet link:<br/>
         <a href="https://docs.google.com/spreadsheet/ccc?key={{ importsheet.spreadsheet_key }}">https://docs.google.com/spreadsheet/ccc?key={{ importsheet.spreadsheet_key }}</a>
       </p>
+      {% if importsheet.fusion_table_key %}
+      <p>
+        Google Fusion Table link:<br/>
+        <a href="https://www.google.com/fusiontables/data?docid={{ importsheet.fusion_table_key }}">https://www.google.com/fusiontables/data?docid={{ importsheet.fusion_table_key }}</a>
+      </p>
+      {% endif %}
       <br/>
       
       <div class="importsheet_controls">

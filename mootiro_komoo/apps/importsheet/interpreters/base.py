@@ -139,7 +139,7 @@ class Interpreter(object):
             rows_dicts.append(row_dict)
 
         return rows_dicts
-    
+
     def parse(self):
         '''
         Parses each row_dict into a dict containing the object, its warnings
