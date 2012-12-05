@@ -97,9 +97,14 @@ def authorized_http():
 
 def google_drive_service():
     '''Build and return a google drive service via OAuth2 to interact with.'''
-    user_agent = 'Python-urllib/2.7'  # it could be anything
-    credentials = AccessTokenCredentials(get_access_token(), user_agent)
-    http = httplib2.Http()
-    http = credentials.authorize(http)
+    http = authorized_http()
     service = build('drive', 'v2', http)
     return service
+
+
+def google_fusion_tables_service():
+    '''Build and return a google fusion tables service via OAuth2 to interact
+    with.'''
+    http = authorized_http()
+    service = build('fusiontables', 'v1', http)
+    return service    

@@ -14,7 +14,7 @@ from urllib import urlencode
 import gspread
 from interpreters import InterpreterFactory, InterpreterNotFound
 
-from .google import google_drive_service, get_access_token, authorized_http
+from .google import google_drive_service, google_fusion_tables_service
 
 
 class Importsheet(models.Model):
@@ -136,19 +136,17 @@ class Importsheet(models.Model):
                             body=body).execute()
         self.spreadsheet_key = data['id']
 
-        # create new fusion table
-        url = 'https://www.googleapis.com/fusiontables/v1/tables/%s/copy' \
-                    % settings.IMPORTSHEET_FUSION_TABLE_TEMPLATE_KEY
-        http = authorized_http()
-        resp, content = http.request(url, 'POST',
-                            urlencode(dict(access_token=get_access_token())))
-        table_data = json.loads(content)
-        body = {
-            'title': '{0} - {1} (KML)'.format(self.id, self.name),
-            'parents': [{'id': self.project_folder_key}]
-        }
-        data = gd.files().patch(fileId=table_data['tableId'], body=body).execute()
-        self.fusion_table_key = data['id']
+        # create new fusion table if needed
+        if self.kml_import:
+            gft = google_fusion_tables_service()
+            tkey = settings.IMPORTSHEET_FUSION_TABLE_TEMPLATE_KEY
+            table_data = gft.table().copy(tableId=tkey).execute()
+            body = {
+                'title': '{0} - {1} (KML)'.format(self.id, self.name),
+                'parents': [{'id': self.project_folder_key}]
+            }
+            data = gd.files().patch(fileId=table_data['tableId'], body=body).execute()
+            self.fusion_table_key = data['id']
 
         self.save()
 
