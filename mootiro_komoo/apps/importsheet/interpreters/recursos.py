@@ -7,11 +7,11 @@ from django.utils.translation import ugettext as _
 from authentication.models import User
 from komoo_resource.models import Resource, ResourceKind
 
-from .base import Interpreter
+from .base import Interpreter, RowInterpreter
 import helpers
 
 
-class RecursosRowInterpreter(object):
+class RecursosRowInterpreter(RowInterpreter):
 
     def __init__(self, rd):
         self.row_dict = rd

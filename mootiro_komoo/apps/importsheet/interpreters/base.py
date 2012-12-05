@@ -39,7 +39,8 @@ class Interpreter(object):
             ...
     '''
 
-    def __init__(self, gspread_worksheet):
+    def __init__(self, importsheet, gspread_worksheet):
+        self.importsheet = importsheet
         self.worksheet = gspread_worksheet
         self.rows = []
         self.errors = []
@@ -140,7 +141,18 @@ class Interpreter(object):
 
         return rows_dicts
 
-    def parse(self):
+    def get_kml_dicts(self):
+        self.kml_dicts = []
+        
+        if not self.importsheet.kml_import:
+            return
+
+        # TODO: retrieve rows from fusion tables
+        # this should be conditional to user simulation params
+
+
+    # TODO: change default to parse_kml=False
+    def parse(self, parse_kml=True):
         '''
         Parses each row_dict into a dict containing the object, its warnings
         and its errors. Return a list with all of these dictionaries.
@@ -149,6 +161,9 @@ class Interpreter(object):
             ri = self.row_interpreter(row_dict)
             try:
                 ri.parse()
+                if parse_kml:
+                    kml_dicts = self.get_kml_dicts()
+                    ri.match_kml(kml_dicts)
             except KeyError as e:
                 msg = _('Missing column: {0}').format(e.message)
                 self.errors.append(msg)
@@ -194,7 +209,6 @@ class RowInterpreter(object):
 
     def __init__(self, row_dict):
         self.row_dict = row_dict
-        self.parse_row_dict()
 
     def parse(self):
         '''
@@ -209,6 +223,13 @@ class RowInterpreter(object):
         defined above.
         '''
         raise NotImplementedError('Subclass responsability')
+
+    def match_kml(self, kml_dicts):
+        '''
+        Receives all kml_dicts and tries to match a polygon identificator
+        against all of them. If a match is made set polygon to object_dict.
+        '''
+        pass 
 
     def to_object(self):
         '''

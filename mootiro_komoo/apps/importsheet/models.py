@@ -58,7 +58,7 @@ class Importsheet(models.Model):
         l = []
         for worksheet in self.spreadsheet.worksheets():
             try:
-                InterpreterFactory.make_interpreter(worksheet)
+                InterpreterFactory.make_interpreter(self, worksheet.title)
                 l.append(worksheet)
             except InterpreterNotFound:
                 pass  # worksheet not recognized
@@ -161,7 +161,7 @@ class Importsheet(models.Model):
             ish.simulate('organization')
         '''
         worksheet = self.spreadsheet.worksheet(worksheet_name)
-        worksheet_interpreter = InterpreterFactory.make_interpreter(worksheet)
+        worksheet_interpreter = InterpreterFactory.make_interpreter(self, worksheet.title)
         worksheet_interpreter.parse()
         return worksheet_interpreter
 

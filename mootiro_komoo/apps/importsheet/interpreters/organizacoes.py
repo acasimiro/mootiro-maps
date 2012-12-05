@@ -11,11 +11,11 @@ from apps.organization.models import OrganizationCategoryTranslation
 from apps.organization.models import TargetAudience
 from komoo_resource.models import Resource
 
-from .base import Interpreter
+from .base import Interpreter, RowInterpreter
 import helpers
 
 
-class OrganizacoesRowInterpreter(object):
+class OrganizacoesRowInterpreter(RowInterpreter):
 
     def __init__(self, rd):
         self.row_dict = rd
